@@ -1,39 +1,18 @@
 #include<iostream>
-#include"kvs.h"
-#include<dlfcn.h>
+#include "kvs.h"
+using namespace std;
 
-map<string,string> m;
+map<string,string>m;
 
 int main(int argc, char *argv[]){
-
-
-    if(argc<4){cout<<"Input three argv"<<endl;}
-    void *handle;
-    int (*put)(string,string,int);
-    string (*get)(string,int*);
-    char *error;
     
-    handle=dlopen("./libmap.so",RTLD_LAZY);
-    if(!handle){
-        fprintf(stderr,"%s\n",dlerror());
-        return 0;
-    }
-
-    put=(int(*)(string,string,int))dlsym(handle,"put");
-    if((error=dlerror())==NULL){
-        fprintf(stderr,"%s\n",error);
-        return 0;
-    }
-    get=(string(*)(string,int*))dlsym(handle,"get");
-    if((error=dlerror())==NULL){
-        fprintf(stderr,"%s\n",error);
-        return 0;
-    }
-
+    if(argc<4){cout<<"Input Three argv"<<endl; return 0;}
+    
     ifstream in(argv[1]);
     if(!in.is_open()){
         cout<<"Cannot Open file"<<endl;
     }
+
     char read[128];
     string key="";
     string value="";
@@ -81,10 +60,4 @@ int main(int argc, char *argv[]){
     }
     in2.close();
     out.close();
-
-    if(dlclose(handle)<0){
-        fprintf(stderr,"%s\n",dlerror());
-        return 0;
-    }
-    return 0;
 }
